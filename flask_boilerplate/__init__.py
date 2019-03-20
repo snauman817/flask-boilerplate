@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 
 
 # this is our factory
@@ -35,5 +35,19 @@ def create_app(test_config=None):
     @app.route('/number/<int:n>')
     def number(n):
         return f"Number: {n}"
+    
+    @app.route('/method', methods=('GET', 'POST', 'PATCH', 'PUT', 'DELETE',))
+    def method_route():
+        return f"HTTP Method: {request.method}"
+    
+    @app.route('/status')
+    def status_route():
+        code = request.args.get('c', '200')
+
+        if int(code) >= 200 and int(code) < 300:
+            return "Hello"
+        else:
+            return abort(int(code))
+
 
     return app
